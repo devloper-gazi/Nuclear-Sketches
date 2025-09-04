@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nuclear Facility Design Gallery</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0f0f0f 0%, #1a1a2e 100%);
+            color: #ffffff;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Header */
+        .header {
+            text-align: center;
+            padding: 60px 20px 40px;
+            background: rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(0, 255, 255, 0.1) 0%, transparent 70%);
+            animation: pulse 15s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1) rotate(0deg); }
+            50% { transform: scale(1.1) rotate(180deg); }
+        }
+
+        h1 {
+            font-size: 3em;
+            font-weight: 200;
+            letter-spacing: 0.05em;
+            margin-bottom: 10px;
+            background: linear-gradient(90deg, #00ffff, #0080ff, #00ffff);
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: gradient 3s linear infinite;
+            position: relative;
+            z-index: 1;
+        }
+
+        @keyframes gradient {
+            to { background-position: 200% center; }
+        }
+
+        .subtitle {
+            font-size: 1.2em;
+            color: rgba(255, 255, 255, 0.7);
+            font-weight: 300;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Gallery Grid */
+        .gallery-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 60px 20px;
+        }
+
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 30px;
+            padding: 20px 0;
+        }
+
+        .gallery-item {
+            position: relative;
+            border-radius: 15px;
+            overflow: hidden;
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: pointer;
+            aspect-ratio: 16/12;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .gallery-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, transparent, rgba(0, 255, 255, 0.1));
+            opacity: 0;
+            transition: opacity 0.4s;
+            pointer-events: none;
+        }
+
+        .gallery-item:hover {
+            transform: translateY(-10px) scale(1.02);
+            border-color: rgba(0, 255, 255, 0.5);
+            box-shadow: 0 20px 50px rgba(0, 255, 255, 0.2);
+        }
+
+        .gallery-item:hover::before {
+            opacity: 1;
+        }
+
+        .gallery-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .gallery-item:hover img {
+            transform: scale(1.1);
+        }
+
+        .item-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(to top, rgba(0, 0, 0, 0.9), transparent);
+            padding: 20px;
+            transform: translateY(100%);
+            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .gallery-item:hover .item-overlay {
+            transform: translateY(0);
+        }
+
+        .item-title {
+            font-size: 1.1em;
+            font-weight: 500;
+            color: #00ffff;
+            margin-bottom: 5px;
+        }
+
+        .item-description {
+            font-size: 0.9em;
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        /* Lightbox */
+        .lightbox {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.95);
+            backdrop-filter: blur(20px);
+            z-index: 1000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.4s;
+        }
+
+        .lightbox.active {
+            display: flex;
+            opacity: 1;
+        }
+
+        .lightbox-content {
+            position: relative;
+            max-width: 90%;
+            max-height: 90%;
+            animation: zoomIn 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        @keyframes zoomIn {
+            from {
+                transform: scale(0.8);
+                opacity: 0;
+            }
+            to {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        .lightbox img {
+            max-width: 100%;
+            max-height: 90vh;
+            border-radius: 10px;
+            box-shadow: 0 20px 60px rgba(0, 255, 255, 0.3);
+        }
+
+        .lightbox-close {
+            position: absolute;
+            top: -40px;
+            right: 0;
+            font-size: 36px;
+            color: #ffffff;
+            cursor: pointer;
+            transition: all 0.3s;
+            background: none;
+            border: none;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+        }
+
+        .lightbox-close:hover {
+            color: #00ffff;
+            transform: rotate(90deg);
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .lightbox-nav {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 48px;
+            color: rgba(255, 255, 255, 0.7);
+            cursor: pointer;
+            background: rgba(0, 0, 0, 0.5);
+            padding: 10px 15px;
+            border-radius: 10px;
+            transition: all 0.3s;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .lightbox-nav:hover {
+            color: #00ffff;
+            background: rgba(0, 0, 0, 0.8);
+            border-color: rgba(0, 255, 255, 0.5);
+        }
+
+        .lightbox-prev {
+            left: 20px;
+        }
+
+        .lightbox-next {
+            right: 20px;
+        }
+
+        .lightbox-counter {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.7);
+            padding: 10px 20px;
+            border-radius: 25px;
+            font-size: 14px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        /* Loading animation */
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(0, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: #00ffff;
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2em;
+            }
+            
+            .gallery-grid {
+                grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+                gap: 20px;
+            }
+            
+            .lightbox-nav {
+                font-size: 36px;
+                padding: 8px 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>NUCLEAR FACILITY DESIGNS</h1>
+        <div class="subtitle">Architectural Concepts & Technical Sketches</div>
+    </div>
+
+    <div class="gallery-container">
+        <div class="gallery-grid" id="galleryGrid">
+            <!-- Gallery items will be inserted here -->
+        </div>
+    </div>
+
+    <div class="lightbox" id="lightbox">
+        <div class="lightbox-content">
+            <button class="lightbox-close" onclick="closeLightbox()">&times;</button>
+            <button class="lightbox-nav lightbox-prev" onclick="navigateLightbox(-1)">‹</button>
+            <button class="lightbox-nav lightbox-next" onclick="navigateLightbox(1)">›</button>
+            <img id="lightboxImage" src="" alt="">
+            <div class="lightbox-counter">
+                <span id="currentImageNum">1</span> / <span id="totalImageNum">13</span>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const images = [
+            { url: 'https://i.ibb.co/Z6q9c2tF/Gemini-Generated-Image-xjca3yxjca3yxjca.png', title: 'Sketch 1', description: 'Full concept, full use of the space above and below' },
+            { url: 'https://i.ibb.co/35m1RvHH/Gemini-Generated-Image-yh3qwxyh3qwxyh3q.png', title: 'Sketch 2', description: 'Half concept. The centre is still underground.' },
+            { url: 'https://i.ibb.co/5HcqZVY/Gemini-Generated-Image-q40tzfq40tzfq40t.png', title: 'Sketch 3', description: 'Dynamic model with axial momentum, multi-layered cross-arranged.' },
+            { url: 'https://i.ibb.co/qY1LLc16/Gemini-Generated-Image-vkoj2ivkoj2ivkoj.png', title: 'Sketch 4', description: 'The concept beneath the ground. High confidentiality.' },
+            { url: 'https://i.ibb.co/qTSTyGg/Gemini-Generated-Image-i6zt59i6zt59i6zt.png', title: 'Sketch 5', description: 'Model-specific field perspectivePossible transition model. Underground.' },
+            { url: 'https://i.ibb.co/01JQXsK/Gemini-Generated-Image-msusdomsusdomsus.png', title: 'Sketch 5', description: 'Possible transition model. Underground.' },
+            { url: 'https://i.ibb.co/BHX4mgVh/Gemini-Generated-Image-imrfm8imrfm8imrf.png', title: 'Sketch 6', description: 'An enlarged version of non-futuristic standard models. Underground.' },
+            { url: 'https://i.ibb.co/r2gWh4Fd/Gemini-Generated-Image-wbrafxwbrafxwbra.png', title: 'Sketch 7', description: 'Inspiration from nature approach. Spider-inspired design. Underground.' },
+            { url: 'https://i.ibb.co/wF7wMy7P/Gemini-Generated-Image-eg458xeg458xeg45.png', title: 'Sketch 8', description: 'The Unite approach belonging to the Sphere Model Medium zoom.' },
+            { url: 'https://i.ibb.co/9HgZGMPq/Gemini-Generated-Image-4208is4208is4208-1.png', title: 'Sketch 9', description: 'The Unite approach belonging to the Sphere Model Medium zoom -2.' },
+            { url: 'https://i.ibb.co/LX5mqTK9/Gemini-Generated-Image-cieoo2cieoo2cieo.png', title: 'Sketch 10', description: 'The reactor sketch located within the unit from the outside' },
+            { url: 'https://i.ibb.co/5XxjVqP1/Gemini-Generated-Image-vcov27vcov27vcov.png', title: 'Sketch 11', description: 'The reactor sketch located within the unit from the outside. Different perspective -2' }
+        ];
+
+        let currentImageIndex = 0;
+
+        function initGallery() {
+            const galleryGrid = document.getElementById('galleryGrid');
+            document.getElementById('totalImageNum').textContent = images.length;
+            
+            images.forEach((image, index) => {
+                const item = document.createElement('div');
+                item.className = 'gallery-item';
+                item.onclick = () => openLightbox(index);
+                
+                item.innerHTML = `
+                    <img src="${image.url}" alt="${image.title}" loading="lazy">
+                    <div class="item-overlay">
+                        <div class="item-title">${image.title}</div>
+                        <div class="item-description">${image.description}</div>
+                    </div>
+                `;
+                
+                galleryGrid.appendChild(item);
+            });
+        }
+
+        function openLightbox(index) {
+            currentImageIndex = index;
+            const lightbox = document.getElementById('lightbox');
+            const lightboxImage = document.getElementById('lightboxImage');
+            
+            lightboxImage.src = images[index].url;
+            lightboxImage.alt = images[index].title;
+            document.getElementById('currentImageNum').textContent = index + 1;
+            
+            lightbox.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeLightbox() {
+            const lightbox = document.getElementById('lightbox');
+            lightbox.classList.remove('active');
+            document.body.style.overflow = 'auto';
+        }
+
+        function navigateLightbox(direction) {
+            currentImageIndex = (currentImageIndex + direction + images.length) % images.length;
+            const lightboxImage = document.getElementById('lightboxImage');
+            
+            lightboxImage.style.opacity = '0';
+            setTimeout(() => {
+                lightboxImage.src = images[currentImageIndex].url;
+                lightboxImage.alt = images[currentImageIndex].title;
+                document.getElementById('currentImageNum').textContent = currentImageIndex + 1;
+                lightboxImage.style.opacity = '1';
+            }, 200);
+        }
+
+        // Keyboard navigation
+        document.addEventListener('keydown', (e) => {
+            if (document.getElementById('lightbox').classList.contains('active')) {
+                if (e.key === 'Escape') closeLightbox();
+                if (e.key === 'ArrowLeft') navigateLightbox(-1);
+                if (e.key === 'ArrowRight') navigateLightbox(1);
+            }
+        });
+
+        // Initialize gallery on load
+        window.addEventListener('load', initGallery);
+    </script>
+</body>
+</html>
