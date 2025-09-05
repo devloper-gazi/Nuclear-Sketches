@@ -1,7 +1,7 @@
 # ⚡ Nuclear-Sketches  
 
 Welcome to **Nuclear-Sketches** — a creative space where **energy systems** meet **architectural imagination**.  
-This repo is a digital sketchbook for exploring how we can design, shape, and rethink the future of **energy through nuclear concepts**. 🌍🔋  
+This repo is a digital sketchbook for exploring how we can design, shape, and rethink the future of **energy through nuclear architectural and other concepts**. 🌍🔋  
 
 ---
 
