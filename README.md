@@ -22,4 +22,4 @@ Because **energy is not just numbers and reactors** — it’s also about how we
 
 ---
 
-👨‍🔬 *Made by curious minds, for curious energy futures.*  
+👨‍🔬 *Sometimes it is the people no one can imagine anything of who do the things no one can imagine.*  
