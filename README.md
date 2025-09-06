@@ -13,7 +13,7 @@ This repo is a digital sketchbook for exploring how we can design, shape, and re
 ---
 
 ### 🌐 Explore the Sketches  
-👉 [Live Demo & Gallery](https://devloper-gazi.github.io/Nuclear-Sketches/)  
+👉 [Live Presentation & Gallery](https://devloper-gazi.github.io/Nuclear-Sketches/)  
 
 ---
 
